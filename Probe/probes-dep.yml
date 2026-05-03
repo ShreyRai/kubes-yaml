@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: probedep
+  labels:
+    app: python-app
+
+spec:
+  replicas: 4
+
+  selector:
+    matchLabels:
+      app: python-app-1
+
+  template:
+    metadata:
+      labels:
+        app: python-app-1
+
+    spec:
+      containers:
+      - name: py-container
+        image: probe-app:v1
+
+        ports:
+        - containerPort: 80
+
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 80
+          initialDelaySeconds: 15
+          periodSeconds: 10
+          failureThreshold: 2
+
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 80
+          initialDelaySeconds: 15
+          periodSeconds: 10
+          failureThreshold: 2
+
+        startupProbe:
+          httpGet:
+            path: /
+            port: 80
+          failureThreshold: 3
+          periodSeconds: 10
