@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment 
+metadata:
+  name: voldep 
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: alpine-app
+  template:
+    metadata:
+      labels:
+        app: alpine-app
+    spec:
+      containers:
+        - name: alpine-con
+          image: alpine:latest
+          command:
+            - /bin/sh
+            - -c
+            - sleep 1000
+          volumeMounts:
+            - name: host-vol
+              mountPath: /etc/data
+      volumes:
+        - name: host-vol
+          hostPath:
+            path: /tmp/data
+            type: DirectoryOrCreate
+
